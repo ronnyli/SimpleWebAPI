@@ -69,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
                     }});
                 }};
 
-                while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 4) {
+                while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 25000) {
                     URL url = new URL(API_URL +
                             "srsearch=morelike%3A" + email +
                             "&sroffset=" + PAGINATION +
-                            "&srlimit=2" +
+                            "&srlimit=500" +
                             "&format=json" +
                             "&list=search" +
                             "&srprop=timestamp" +
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         if (out.has("continue")) {
                             PAGINATION = out.getJSONObject("continue").getInt("sroffset");
                         }
+                        // TODO: articles.append(out['query']['search']). Possibly using JSONObject.accumulate?
                     } finally {
                         urlConnection.disconnect();
                     }
