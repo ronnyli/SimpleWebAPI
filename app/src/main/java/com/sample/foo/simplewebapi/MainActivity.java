@@ -62,18 +62,21 @@ public class MainActivity extends AppCompatActivity {
             // Do some validation here
 
             try {
-                StringBuilder stringBuilder = new StringBuilder();
+                // articles accumulates the the results from Wikipedia during pagination
+                JSONObject articles = new JSONObject() {{
+                    put("titles", new JSONArray());
+                }};
                 JSONObject out = new JSONObject() {{
                     put("continue", new JSONObject() {{
                         put("sroffset", PAGINATION);
                     }});
                 }};
 
-                while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 25000) {
+                while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 4) {
                     URL url = new URL(API_URL +
                             "srsearch=morelike%3A" + email +
                             "&sroffset=" + PAGINATION +
-                            "&srlimit=500" +
+                            "&srlimit=2" +
                             "&format=json" +
                             "&list=search" +
                             "&srprop=timestamp" +
@@ -85,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                         StringBuilder currResponse = new StringBuilder();
                         String line;
                         while ((line = bufferedReader.readLine()) != null) {
-                            stringBuilder.append(line).append("\n");
                             currResponse.append(line).append("\n");
                         }
                         bufferedReader.close();
@@ -93,12 +95,19 @@ public class MainActivity extends AppCompatActivity {
                         if (out.has("continue")) {
                             PAGINATION = out.getJSONObject("continue").getInt("sroffset");
                         }
-                        // TODO: articles.append(out['query']['search']). Possibly using JSONObject.accumulate?
+                        // loop through [query][search] JSONArray and accumulate to articles[titles]
+                        JSONArray results = out.getJSONObject("query").getJSONArray("search");
+                        for (int i = 0; i < results.length(); ++i) {
+                            JSONObject result = results.getJSONObject(i);
+                            String title = result.getString("title");
+                            articles.accumulate("titles", title);
+                        }
                     } finally {
                         urlConnection.disconnect();
                     }
                 }
-                return stringBuilder.toString();
+                PAGINATION = 0;  // reset pagination
+                return articles.toString();
             }
             catch(Exception e) {
                 Log.e("ERROR", e.getMessage(), e);
