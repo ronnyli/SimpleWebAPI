@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">SimpleWebAPI</string>
-    <string name="title_activity_main">SimpleWebAPI</string>
+    <string name="title_activity_main">Wikipedia Digest</string>
 </resources>

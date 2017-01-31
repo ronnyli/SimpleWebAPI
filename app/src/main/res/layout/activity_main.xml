@@ -10,11 +10,17 @@
     tools:context="com.sample.foo.simplewebapi.MainActivity">
 
     <EditText
-        android:id="@+id/emailText"
+        android:id="@+id/wikiTitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:hint="Enter email address"/>
+        android:hint="Enter Wikipedia Article Title"/>
+
+    <EditText
+        android:id="@+id/numSubset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="# of results to display"/>
 
     <Button
         android:id="@+id/queryButton"

@@ -23,7 +23,8 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText emailText;
+    EditText wikiTitleText;
+    EditText numSubset;
     TextView responseView;
     ProgressBar progressBar;
     int PAGINATION = 0;
@@ -35,15 +36,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         responseView = (TextView) findViewById(R.id.responseView);
-        emailText = (EditText) findViewById(R.id.emailText);
+        wikiTitleText = (EditText) findViewById(R.id.wikiTitleText);
+        numSubset = (EditText) findViewById(R.id.numSubset);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         Button queryButton = (Button) findViewById(R.id.queryButton);
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = emailText.getText().toString();
-                new RetrieveFeedTask().execute(email);
+                String wiki_title = wikiTitleText.getText().toString();
+                String num_subset = numSubset.getText().toString();
+                new RetrieveFeedTask().execute(wiki_title, num_subset);
             }
         });
     }
@@ -57,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
             responseView.setText("");
         }
 
-        protected String doInBackground(String... urls) {
-            String email = urls[0];
+        protected String doInBackground(String... inputs) {
+            String wiki_title = inputs[0];
+            Integer num_subset = Integer.parseInt(inputs[1]);
             // Do some validation here
 
             try {
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
                 while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 10) {
                     URL url = new URL(API_URL +
-                            "srsearch=morelike%3A" + email +
+                            "srsearch=morelike%3A" + wiki_title +
                             "&sroffset=" + PAGINATION +
                             "&srlimit=2" +
                             "&format=json" +
@@ -109,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 PAGINATION = 0;  // reset pagination
 
                 JSONArray titles = articles.getJSONArray("titles");
-                JSONArray subset = Util.pickNRandom(titles, 2);
+                JSONArray subset = Util.pickNRandom(titles, num_subset);
                 return subset.toString();
             }
             catch(Exception e) {
