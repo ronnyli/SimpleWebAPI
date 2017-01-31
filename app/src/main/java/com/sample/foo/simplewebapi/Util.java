@@ -1,5 +1,9 @@
 package com.sample.foo.simplewebapi;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,21 +24,23 @@ public final class Util {
      */
     private Util() {}
 
-    public static int getYear() {
-        return GregorianCalendar.YEAR;
-    }
+    public static JSONArray pickNRandom(JSONArray array, int n) {
 
-    public static int[] pickNRandom(int[] array, int n) {
-
-        List<Integer> list = new ArrayList<Integer>(array.length);
-        for (int i : array)
-            list.add(i);
+        List<String> list = new ArrayList<String>(array.length());
+        for (int i = 0; i < array.length(); i++) {
+            try {
+                String title = array.getString(i);
+                list.add(title);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         Collections.shuffle(list);
 
-        int[] answer = new int[n];
+        JSONArray answer = new JSONArray();
+//        String answer[] = new String[n];
         for (int i = 0; i < n; i++)
-            answer[i] = list.get(i);
-        Arrays.sort(answer);
+            answer.put(list.get(i));
 
         return answer;
 

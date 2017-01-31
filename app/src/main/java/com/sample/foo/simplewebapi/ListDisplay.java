@@ -19,7 +19,7 @@ public class ListDisplay extends Activity {
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 R.layout.activity_listview, mobileArray);
 
-        ListView listView = (ListView) findViewById(R.id.mobile_list);
+        ListView listView = (ListView) findViewById(R.id.responseView);
         listView.setAdapter(adapter);
     }
 }

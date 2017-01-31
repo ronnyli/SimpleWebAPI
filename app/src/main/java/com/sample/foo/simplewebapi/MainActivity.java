@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     }});
                 }};
 
-                while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 4) {
+                while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 10) {
                     URL url = new URL(API_URL +
                             "srsearch=morelike%3A" + email +
                             "&sroffset=" + PAGINATION +
@@ -107,7 +107,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 PAGINATION = 0;  // reset pagination
-                return articles.toString();
+
+                JSONArray titles = articles.getJSONArray("titles");
+                JSONArray subset = Util.pickNRandom(titles, 2);
+                return subset.toString();
             }
             catch(Exception e) {
                 Log.e("ERROR", e.getMessage(), e);
@@ -122,21 +125,6 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             Log.i("INFO", response);
             responseView.setText(response);
-            // TODO: check this.exception
-            // TODO: do something with the feed
-
-//            try {
-//                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-//                String requestID = object.getString("requestId");
-//                int likelihood = object.getInt("likelihood");
-//                JSONArray photos = object.getJSONArray("photos");
-//                .
-//                .
-//                .
-//                .
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
         }
     }
 }
