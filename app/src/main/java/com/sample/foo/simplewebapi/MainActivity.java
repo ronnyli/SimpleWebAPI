@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 PAGINATION = 0;  // reset pagination
 
                 JSONArray titles = articles.getJSONArray("titles");
-                JSONArray subset = Util.pickNRandom(titles, num_subset);
+                JSONArray subset = Util.pickNRandomWeighted(titles, num_subset);
                 return subset.toString();
             }
             catch(Exception e) {

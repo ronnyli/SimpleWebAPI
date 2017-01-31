@@ -38,11 +38,43 @@ public final class Util {
         Collections.shuffle(list);
 
         JSONArray answer = new JSONArray();
-//        String answer[] = new String[n];
         for (int i = 0; i < n; i++)
             answer.put(list.get(i));
 
         return answer;
 
+    }
+
+    public static JSONArray pickNRandomWeighted(JSONArray array, int n) {
+        JSONArray answer = new JSONArray();
+        for (int i = 0; i < n; i++) {
+            answer.put(pickRandomWeighted(array));
+        }
+        return answer;
+    }
+
+    public static String pickRandomWeighted(JSONArray array) {
+        // Results are weighted by their position in array
+        // weight is 1/(1+index)^0.5
+        List<Double> weights = new ArrayList<Double>(array.length());
+        Double completeWeight = 0.0;
+        for (int i = 0; i < array.length(); i++) {
+            Double weight = 1 / Math.sqrt(1 + i);
+            weights.add(weight);
+            completeWeight += weight;
+        }
+        double r = Math.random() * completeWeight;
+        double countWeight = 0.0;
+        for (int i = 0; i < array.length(); i++) {
+            countWeight += weights.get(i);
+            if (countWeight >= r) {
+                try {
+                    return array.getString(i);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "Something fucked up with pickRandomWeighted";
     }
 }
