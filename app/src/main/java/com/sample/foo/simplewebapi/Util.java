@@ -46,14 +46,6 @@ public final class Util {
     }
 
     public static JSONArray pickNRandomWeighted(JSONArray array, int n) {
-        JSONArray answer = new JSONArray();
-        for (int i = 0; i < n; i++) {
-            answer.put(pickRandomWeighted(array));
-        }
-        return answer;
-    }
-
-    public static String pickRandomWeighted(JSONArray array) {
         // Results are weighted by their position in array
         // weight is 1/(1+index)^0.5
         List<Double> weights = new ArrayList<Double>(array.length());
@@ -63,18 +55,32 @@ public final class Util {
             weights.add(weight);
             completeWeight += weight;
         }
+        // initialize for while loop
         double r = Math.random() * completeWeight;
         double countWeight = 0.0;
-        for (int i = 0; i < array.length(); i++) {
+        int i = 0;
+        JSONArray answer = new JSONArray();
+        List<Integer> selected = new ArrayList<Integer>(n);
+        while (answer.length() < n) {
             countWeight += weights.get(i);
-            if (countWeight >= r) {
+            if (countWeight >= r && !selected.contains(i)) {
+                // answer and index should be retained
+                //completeWeight needs to be adjusted down
                 try {
-                    return array.getString(i);
+                    answer.put(array.getString(i));
+                    selected.add(i);
+                    completeWeight -= weights.get(i);
+                    // Restart loop
+                    r = Math.random() * completeWeight;
+                    countWeight = 0.0;
+                    i = 0;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                continue;
             }
+            i++;
         }
-        return "Something fucked up with pickRandomWeighted";
+        return answer;
     }
 }

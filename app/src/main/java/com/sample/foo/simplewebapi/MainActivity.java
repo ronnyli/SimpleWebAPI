@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
+// TODO: cache results across searches
 public class MainActivity extends AppCompatActivity {
 
     EditText wikiTitleText;
@@ -76,11 +76,11 @@ public class MainActivity extends AppCompatActivity {
                     }});
                 }};
 
-                while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 10) {
+                while (out.has("continue") && out.getJSONObject("continue").getInt("sroffset") < 25000) {
                     URL url = new URL(API_URL +
                             "srsearch=morelike%3A" + wiki_title +
                             "&sroffset=" + PAGINATION +
-                            "&srlimit=2" +
+                            "&srlimit=500" +
                             "&format=json" +
                             "&list=search" +
                             "&srprop=timestamp" +
